@@ -1,0 +1,8 @@
+dist/*
+bin/*
+Dockerfile
+.nodemonignore
+.dockerignore
+.gitignore
+README.md
+docker-compose.yml

@@ -1,0 +1,38 @@
+version: '3'
+
+volumes:
+  mongodb-data:
+    driver: local
+
+services:
+  mongodb:
+    restart: always
+    image: mongo
+    env_file: .env
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+      - ./bin/mongo-entrypoint/:/docker-entrypoint-initdb.d
+  node-app:
+    build: .
+    env_file: .env
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    command: bash -c bin/run.sh
+    links: 
+      - mongodb:mongodb
+  node-test:
+    build: .
+    env_file: .env_test
+    command: bash -c bin/run.sh
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    links:
+      - mongodb:mongodb
